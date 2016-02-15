@@ -1,0 +1,16 @@
+consul:
+  image: progrium/consul
+  container_name: consul
+  ports:
+    - "8500:8500"
+  command: "-server -bootstrap -ui-dir /ui"
+  restart: always
+
+registrator:
+  image: gliderlabs/registrator
+  container_name: registrator
+  net: "host"
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+  command: "-ip 192.168.1.33 consul://192.168.1.33:8500"
+  restart: always
