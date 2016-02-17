@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Created by ilya on 16.02.16.
  */
-@FeignClient("benchmark-rest-handler")
+@FeignClient("resthandler")
 public interface BenchmarkRestHandlerStarter {
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     void start(@RequestParam("filelength") int fileLength);

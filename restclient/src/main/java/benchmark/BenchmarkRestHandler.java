@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by ilya on 15.02.16.
  */
-@FeignClient("benchmark-rest-handler")
+@FeignClient("resthandler")
 public interface BenchmarkRestHandler {
     @RequestMapping(value = "/getfile", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     BenchmarkRestHandler.RestHandlerResponse getFile();

@@ -1,9 +1,10 @@
 spring.cloud.consul.discovery.preferIpAddress: true
 spring.cloud.consul.discovery.enabled: true
 
-spring.cloud.consul.host: localhost
+spring.cloud.consul.host: {spring.cloud.consul.host}
 ---
 spring:
   application:
-    name: aggregator
+    name: resthandler
     profiles: consul
+    hostname: 192.168.1.33

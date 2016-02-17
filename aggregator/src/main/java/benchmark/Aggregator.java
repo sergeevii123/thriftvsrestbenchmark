@@ -18,11 +18,11 @@ public class Aggregator {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(Aggregator.class, args);
-        Scanner sc = new Scanner(System.in);
+        /*Scanner sc = new Scanner(System.in);
 
-        if (sc.next().equalsIgnoreCase("start rest")) {
+        if (sc.next().equalsIgnoreCase("start rest")) {*/
             context.getBean(BenchmarkRestHandlerStarter.class).start(10000);
             context.getBean(BenchmarkRestClientStarter.class).start(2, 60);
-        }
+        //}
     }
 }

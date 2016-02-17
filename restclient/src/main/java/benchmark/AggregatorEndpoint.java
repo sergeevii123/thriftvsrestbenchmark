@@ -2,10 +2,12 @@ package benchmark;
 
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
+import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ilya on 15.02.16.
  */
+@Slf4j
 @RestController
 public class AggregatorEndpoint {
 
@@ -35,9 +38,8 @@ public class AggregatorEndpoint {
     private BenchmarkRestHandler restHandler;
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
-    public void startBenchmark(@PathVariable("threadcount") int threadCount,
-                               @PathVariable("duration") int duration) {
-
+    public void startBenchmark(@RequestParam("threadcount") int threadCount,
+                               @RequestParam("duration") int duration) {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(threadCount + 1);
         List<Future> futures = new ArrayList<>();
         //send get request to resthandler and update metric for get-file
