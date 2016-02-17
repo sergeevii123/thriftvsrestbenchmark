@@ -5,5 +5,5 @@ spring.cloud.consul.host: {spring.cloud.consul.host}
 ---
 spring:
   application:
-    name: resthandler
+    name: thriftclient
     profiles: consul

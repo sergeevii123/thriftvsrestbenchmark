@@ -21,8 +21,9 @@ public class Aggregator {
         /*Scanner sc = new Scanner(System.in);
 
         if (sc.next().equalsIgnoreCase("start rest")) {*/
-            context.getBean(BenchmarkRestHandlerStarter.class).start(10000);
-            context.getBean(BenchmarkRestClientStarter.class).start(2, 60);
+            //context.getBean(BenchmarkRestHandlerStarter.class).start((int)(1*1024*1024));
+        context.getBean(BenchmarkThriftHandlerStarter.class).start((int)(1*1024*1024));
+            //context.getBean(BenchmarkRestClientStarter.class).start(2, 60);
         //}
     }
 }

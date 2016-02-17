@@ -9,18 +9,17 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableMBeanExport;
 
 /**
- * Created by ilya on 09.02.16.
+ * Created by ilya on 15.02.16.
  */
 @Slf4j
 @EnableFeignClients
 @EnableDiscoveryClient
 @EnableMBeanExport
 @SpringBootApplication
-public class RestClientApplication {
+public class ThriftClientApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(RestClientApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(ThriftClientApplication.class, args);
 
-        //test
         context.getBean(AggregatorEndpoint.class).startBenchmark(2, 30);
     }
 }

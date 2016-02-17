@@ -3,6 +3,10 @@ package benchmark;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import groovy.util.logging.Slf4j;
+import info.developerblog.services.user.TBenchmarkService;
+import info.developerblog.services.user.THandlerResponse;
+import info.developerblog.spring.thrift.annotation.ThriftClient;
+import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,8 +37,8 @@ public class AggregatorEndpoint {
         reporter.start();
     }
 
-    @Autowired
-    private BenchmarkRestHandler restHandler;
+    @ThriftClient(serviceId = "thrifthandler", path = "/api")
+    private TBenchmarkService.Client thriftHandler;
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     public void startBenchmark(@RequestParam("threadcount") int threadCount,
@@ -49,18 +53,22 @@ public class AggregatorEndpoint {
             }
         }, duration, TimeUnit.SECONDS);
 
-        //send get request to resthandler and update metric for get-file
+        //send get request to thrifthandler and update metric for get-file
         for (int i = 0; i < threadCount; i++) {
             futures.add(executor.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
-                    BenchmarkRestHandler.RestHandlerResponse response = restHandler.getFile();
+                    THandlerResponse response = null;
+                    try {
+                        response = thriftHandler.getfile();
+                    } catch (TException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println(response.getFile().length);
-                    registry.timer("get-file").update(System.currentTimeMillis() - response.getCreated(),
+                    registry.timer("get-file").update(System.currentTimeMillis() - response.getStart(),
                             TimeUnit.MILLISECONDS);
                 }
             }));
         }
-
 
     }
 
