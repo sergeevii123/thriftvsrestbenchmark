@@ -37,6 +37,7 @@ public class AggregatorEndpoint {
         registry = new MetricRegistry();
         reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.thrift").build();
         reporter.start();
+        counter = 0;
     }
 
     @ThriftClient(serviceId = "thrifthandler", path = "/api")

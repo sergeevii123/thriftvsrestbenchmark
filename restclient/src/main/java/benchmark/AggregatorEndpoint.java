@@ -33,6 +33,7 @@ public class AggregatorEndpoint {
         registry = new MetricRegistry();
         reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.rest").build();
         reporter.start();
+        counter = 0;
     }
 
     @Autowired
