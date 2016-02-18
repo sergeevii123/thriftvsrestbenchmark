@@ -4,12 +4,9 @@
 * change in docker-compose.yml \<HOST_IP\> for ip of the host where you will benchmark
 * docker-compose up -d
 * Open Consul and wait for all service to turn green
-* start aggregator manually
-when aggregator finishes
-
-
-connect with jconsole/jvisualvm to \<HOST_IP>\:8989 - rest and \<HOST_IP>\:8990 - thrift 
-
+* start aggregator manually 
+ 
+when aggregator finishes connect with jconsole/jvisualvm to \<HOST_IP>\:8989 - rest and \<HOST_IP>\:8990 - thrift 
 
 mbeans registry: benchmark.rest || benchmark.thrift 
 
