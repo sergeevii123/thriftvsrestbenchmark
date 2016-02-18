@@ -19,7 +19,5 @@ import org.springframework.context.annotation.EnableMBeanExport;
 public class ThriftClientApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(ThriftClientApplication.class, args);
-
-        context.getBean(AggregatorEndpoint.class).startBenchmark(2, 30);
     }
 }

@@ -1,9 +1,11 @@
-spring.cloud.consul.discovery.preferIpAddress: true
-spring.cloud.consul.discovery.enabled: true
+#spring.cloud.consul.discovery.preferIpAddress: true
+#spring.cloud.consul.discovery.enabled: true
+#
+#spring.cloud.consul.host: {spring.cloud.consul.host}
+#---
+#spring:
+#  application:
+#    name: resthandler
+#    profiles: consul
 
-spring.cloud.consul.host: {spring.cloud.consul.host}
----
-spring:
-  application:
-    name: resthandler
-    profiles: consul
+# FOR TEST

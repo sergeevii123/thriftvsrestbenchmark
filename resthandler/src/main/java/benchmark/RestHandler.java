@@ -17,14 +17,14 @@ public class RestHandler {
     private byte[] array;
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
-    public void start(@RequestParam("filelength") int fileLength){
+    public void start(@RequestParam("filelength") int fileLength) {
         Random random = new Random();
         array = new byte[fileLength];
         random.nextBytes(array);
     }
 
     @RequestMapping(value = "/getfile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestHandlerResponse getFile(){
+    public RestHandlerResponse getFile() {
         return RestHandlerResponse.builder().created(System.currentTimeMillis()).file(array).build();
     }
 

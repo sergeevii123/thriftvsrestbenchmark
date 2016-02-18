@@ -5,5 +5,5 @@ dependencies {
     compile "org.springframework.cloud:spring-cloud-starter-feign"
     compile "org.springframework.cloud:spring-cloud-starter-ribbon"
     compile "info.developerblog.spring.thrift:spring-thrift-starter"
-    compile "org.springframework.cloud:spring-cloud-starter-consul-all"
+    //compile "org.springframework.cloud:spring-cloud-starter-consul-all" // FOR TEST
 }

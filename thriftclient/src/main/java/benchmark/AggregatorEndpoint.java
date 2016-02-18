@@ -31,9 +31,11 @@ public class AggregatorEndpoint {
 
     private static final JmxReporter reporter;
 
+    private static int counter;
+
     static {
         registry = new MetricRegistry();
-        reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.rest").build();
+        reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.thrift").build();
         reporter.start();
     }
 
@@ -46,11 +48,15 @@ public class AggregatorEndpoint {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(threadCount + 1);
         List<Future> futures = new ArrayList<>();
 
+        //each new start creates new statistic
+        String name = "get-file-" + counter++;
+
         //shuts up benchmark after duration
         executor.schedule(() -> {
             for (int i = 0; i < threadCount; i++) {
                 futures.get(i).cancel(true);
             }
+
         }, duration, TimeUnit.SECONDS);
 
         //send get request to thrifthandler and update metric for get-file
@@ -63,8 +69,8 @@ public class AggregatorEndpoint {
                     } catch (TException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(response.getFile().length);
-                    registry.timer("get-file").update(System.currentTimeMillis() - response.getStart(),
+
+                    registry.timer(name).update(System.currentTimeMillis() - response.getStart(),
                             TimeUnit.MILLISECONDS);
                 }
             }));

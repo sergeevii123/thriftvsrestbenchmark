@@ -18,9 +18,6 @@ import org.springframework.context.annotation.EnableMBeanExport;
 @SpringBootApplication
 public class RestClientApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(RestClientApplication.class, args);
-
-        //test
-        context.getBean(AggregatorEndpoint.class).startBenchmark(2, 30);
+        SpringApplication.run(RestClientApplication.class, args);
     }
 }

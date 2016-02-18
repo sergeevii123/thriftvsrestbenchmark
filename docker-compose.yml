@@ -9,31 +9,66 @@ consul:
 registrator:
   image: gliderlabs/registrator
   container_name: registrator
-  net: "host"
   volumes:
     - "/var/run/docker.sock:/tmp/docker.sock"
-  command: "-ip 192.168.1.33 consul://192.168.1.33:8500"
+  command: "-ip <HOST_IP> consul://<HOST_IP>:8500"
+  volumes_from: #until depends_on will be introduced
+    - consul
   restart: always
 
-#restclient:
-#  image: restclient
-#  ports:
-#    - "8080"
-#    - "9110"
-#  environment:
-#    - "SPRING_CLOUD_CONSUL_HOST=192.168.1.33"
-#    - "JAVA_OPTS=-Dcom.sun.management.jmxremote -Djava.rmi.server.hostname=192.168.1.33 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.rmi.port=9110"
+restclient:
+  image: restclient
+  ports:
+    - "8080"
+    - "8989:8989"
+  environment:
+    - "SERVICE_8080_NAME=restclient"
+    - "SERVICE_8989_NAME=restclientjmxport"
+    - "SERVICE_8080_CHECK_HTTP=/health"
+    - "SERVICE_8080_CHECK_INTERVAL=1s"
+    - "SPRING_PROFILES_ACTIVE=consul"
+    - "JMX_REMOTE_HOST=<HOST_IP>"
+    - "SPRING_CLOUD_CONSUL_HOST=<HOST_IP>"
+  volumes_from: #until depends_on will be introduced
+    - registrator
+
 
 resthandler:
   image: resthandler
   ports:
     - "8080"
   environment:
-    - "SPRING_CLOUD_CONSUL_HOST=192.168.1.33"
+    - "SERVICE_NAME=resthandler"
+    - "SERVICE_CHECK_HTTP=/health"
+    - "SERVICE_CHECK_INTERVAL=1s"
+    - "SPRING_PROFILES_ACTIVE=consul"
+  volumes_from: #until depends_on will be introduced
+    - registrator
+
+thriftclient:
+  image: thriftclient
+  ports:
+    - "8080"
+    - "8990:8990"
+  environment:
+    - "SERVICE_8080_NAME=thriftclient"
+    - "SERVICE_8080_CHECK_HTTP=/health"
+    - "SERVICE_8080_CHECK_INTERVAL=1s"
+    - "SERVICE_8990_NAME=thriftclientjmxport"
+    - "SPRING_PROFILES_ACTIVE=consul"
+    - "JMX_REMOTE_HOST=<HOST_IP>"
+    - "SPRING_CLOUD_CONSUL_HOST=<HOST_IP>"
+  volumes_from: #until depends_on will be introduced
+    - registrator
 
 thrifthandler:
   image: thrifthandler
   ports:
     - "8080"
   environment:
-    - "SPRING_CLOUD_CONSUL_HOST=192.168.1.33"
+    - "SERVICE_NAME=thrifthandler"
+    - "SERVICE_CHECK_HTTP=/health"
+    - "SERVICE_CHECK_INTERVAL=1s"
+    - "SPRING_PROFILES_ACTIVE=consul"
+  volumes_from: #until depends_on will be introduced
+    - registrator

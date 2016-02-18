@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
  */
 @Slf4j
 @EnableFeignClients
-@EnableDiscoveryClient
+//@EnableDiscoveryClient //FOR TEST
 @SpringBootApplication
 public class ThriftHandlerApplication {
     public static void main(String[] args) {

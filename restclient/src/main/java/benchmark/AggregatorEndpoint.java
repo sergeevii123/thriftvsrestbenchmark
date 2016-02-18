@@ -27,6 +27,8 @@ public class AggregatorEndpoint {
 
     private static final JmxReporter reporter;
 
+    private static int counter;
+
     static {
         registry = new MetricRegistry();
         reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.rest").build();
@@ -42,6 +44,9 @@ public class AggregatorEndpoint {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(threadCount + 1);
         List<Future> futures = new ArrayList<>();
 
+        //each new start creates new statistic
+        String name = "get-file-" + counter++;
+
         //shuts up benchmark after duration
         executor.schedule(() -> {
             for (int i = 0; i < threadCount; i++) {
@@ -54,8 +59,8 @@ public class AggregatorEndpoint {
             futures.add(executor.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     BenchmarkRestHandler.RestHandlerResponse response = restHandler.getFile();
-                    System.out.println(response.getFile().length);
-                    registry.timer("get-file").update(System.currentTimeMillis() - response.getCreated(),
+
+                    registry.timer(name).update(System.currentTimeMillis() - response.getCreated(),
                             TimeUnit.MILLISECONDS);
                 }
             }));
