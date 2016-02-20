@@ -15,5 +15,6 @@ CMD ["bash", "-c", "java -jar  \
  -Dcom.sun.management.jmxremote.rmi.port=8989 \
  -Dcom.sun.management.jmxremote.ssl=false \
  -Dcom.sun.management.jmxremote=true \
+ -Dbalance.timeout=$BALANCE_TIMEOUT \
  -Dspring.cloud.consul.host=$SPRING_CLOUD_CONSUL_HOST \
   app.jar"]

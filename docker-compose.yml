@@ -29,6 +29,7 @@ restclient:
     - "SPRING_PROFILES_ACTIVE=consul"
     - "JMX_REMOTE_HOST=<HOST_IP>"
     - "SPRING_CLOUD_CONSUL_HOST=<HOST_IP>"
+    - "BALANCE_TIMEOUT=1" #local 1 ms
   volumes_from: #until depends_on will be introduced
     - registrator
 
@@ -58,6 +59,7 @@ thriftclient:
     - "SPRING_PROFILES_ACTIVE=consul"
     - "JMX_REMOTE_HOST=<HOST_IP>"
     - "SPRING_CLOUD_CONSUL_HOST=<HOST_IP>"
+    - "BALANCE_TIMEOUT=1" #local 1 ms
   volumes_from: #until depends_on will be introduced
     - registrator
 
