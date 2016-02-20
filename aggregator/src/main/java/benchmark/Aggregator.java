@@ -23,13 +23,13 @@ public class Aggregator {
 
         for (int i = 0; i < 3; i++) {
             //start rest test
-            context.getBean(BenchmarkRestHandlerStarter.class).start(10*1024*1024); //file size
+            context.getBean(BenchmarkRestHandlerStarter.class).start(4*1024*1024); //file size
             TimeUnit.SECONDS.sleep(2);
             context.getBean(BenchmarkRestClientStarter.class).start(2, 30); //thread count and duration in seconds
             TimeUnit.SECONDS.sleep(32);
 
             //start thrift test
-            context.getBean(BenchmarkThriftHandlerStarter.class).start(10*1024*1024); //file size
+            context.getBean(BenchmarkThriftHandlerStarter.class).start(4*1024*1024); //file size
             TimeUnit.SECONDS.sleep(2);
             context.getBean(BenchmarkThriftClientStarter.class).start(2, 30); //thread count and duration in seconds
             TimeUnit.SECONDS.sleep(32);

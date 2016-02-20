@@ -4,6 +4,9 @@ import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RestController
+@ManagedResource(objectName = "benchmark.rest:name=Settings", description = "Settings")
 public class AggregatorEndpoint {
 
     private static final MetricRegistry registry;
@@ -28,6 +32,9 @@ public class AggregatorEndpoint {
     private static final JmxReporter reporter;
 
     private static int counter;
+
+    @Value("${balance.timeout:200}")
+    private int balanceTimeout;
 
     static {
         registry = new MetricRegistry();
@@ -63,11 +70,27 @@ public class AggregatorEndpoint {
 
                     registry.timer(name).update(System.currentTimeMillis() - response.getCreated(),
                             TimeUnit.MILLISECONDS);
+
+                    try {
+                        //for balance frequency of get requests and responses from handler
+                        TimeUnit.MILLISECONDS.sleep(balanceTimeout);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                 }
             }));
         }
 
+    }
 
+    @ManagedAttribute(description = "balanceTimeout for thread sleep after received file")
+    public int getBalanceTimeout() {
+        return balanceTimeout;
+    }
+
+    @ManagedAttribute(description = "Set balanceTimeout in milli seconds for thread sleep after received file")
+    public void setBalanceTimeout(int balanceTimeout) {
+        this.balanceTimeout = balanceTimeout;
     }
 
 }
