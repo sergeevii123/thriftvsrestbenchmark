@@ -1,0 +1,5 @@
+---
+serviceCheckHttp: /health
+serviceCheckInterval: 1s
+springProfilesActive: consul
+consulIp: <IP Address where your consul and clients are>

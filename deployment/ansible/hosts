@@ -1,0 +1,2 @@
+[test-env]
+<TEST_ENV> ansible_ssh_host=<TEST_ENV> ansible_ssh_user=<REMOTE_USER>

@@ -1,0 +1,66 @@
+---
+- name: deploy handlers and registrator
+  hosts: test-env
+  serial: 1
+  sudo: false
+  
+  vars_files:
+      - vars/common.yaml
+      
+  tasks:
+    - name: stop docker container
+      shell: docker stop registrator
+      ignore_errors: yes
+
+    - name: remove docker container
+      shell: docker rm registrator
+      ignore_errors: yes
+
+    - name: start registrator container
+      shell: |
+        docker run -d --name registrator \
+        --volume=/var/run/docker.sock:/tmp/docker.sock \
+        registrator \
+        -ip {{ansible_default_ipv4.address}} \
+        consul://{{consulIp}}:8500
+
+    - name: stop docker container
+      shell: docker stop resthandler
+      ignore_errors: yes
+
+    - name: remove docker container
+      shell: docker rm resthandler
+      ignore_errors: yes
+
+    - name: start rest handler container
+      shell: |
+        docker run -d -p 8080 --name resthandler \
+        -e "SERVICE_NAME=resthandler" \
+        -e "SERVICE_CHECK_HTTP={{serviceCheckHttp}}" \
+        -e "SERVICE_CHECK_INTERVAL={{serviceCheckInterval}}" \
+        -e "SPRING_PROFILES_ACTIVE={{springProfilesActive}}" \
+        resthandler:latest
+
+
+    - name: stop docker container
+      shell: docker stop thrifthandler
+      ignore_errors: yes
+      
+    - name: remove docker container
+      shell: docker rm thrifthandler
+      ignore_errors: yes
+
+    - name: start thrift handler container
+      shell: |
+        docker run -d -p 8080 --name thrifthandler \
+        -e "SERVICE_NAME=thrifthandler" \
+        -e "SERVICE_CHECK_HTTP={{serviceCheckHttp}}" \
+        -e "SERVICE_CHECK_INTERVAL={{serviceCheckInterval}}" \
+        -e "SPRING_PROFILES_ACTIVE={{springProfilesActive}}" \
+        thrifthandler:latest
+
+        
+
+
+
+
