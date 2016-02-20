@@ -13,3 +13,5 @@ mbeans registry: benchmark.rest || benchmark.thrift
 In current version aggregator just starts test for thrift and rest.
 
 For configure number of threads and length of sending file look in benchmark.Aggregator class
+
+use ansible scripts for benchmark over your network
