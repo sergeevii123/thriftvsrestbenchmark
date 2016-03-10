@@ -7,4 +7,3 @@ spring:
   application:
     name: restclientboot
     profiles: consul
-#spring.cloud.consul.host: consul-8500

@@ -11,7 +11,7 @@ registrator:
   container_name: registrator
   volumes:
     - "/var/run/docker.sock:/tmp/docker.sock"
-  command: "-ip <HOST_IP> consul://<HOST_IP>:8500"
+  command: "-ip 10.199.51.164 consul://10.199.51.164:8500"
   volumes_from: #until depends_on will be introduced
     - consul
   restart: always
@@ -21,28 +21,41 @@ restclient:
   ports:
     - "8080"
     - "8989:8989"
+    - "4000:4000"
   environment:
     - "SERVICE_8080_NAME=restclient"
     - "SERVICE_8989_NAME=restclientjmxport"
+    - "SERVICE_4000_NAME=restclientdebugport"
     - "SERVICE_8080_CHECK_HTTP=/health"
     - "SERVICE_8080_CHECK_INTERVAL=1s"
-    - "SPRING_PROFILES_ACTIVE=consul"
-    - "JMX_REMOTE_HOST=<HOST_IP>"
-    - "SPRING_CLOUD_CONSUL_HOST=<HOST_IP>"
-    - "BALANCE_TIMEOUT=1" #local 1 ms
+    - "SPRING_PROFILES_ACTIVE=mode2"
+    - "JMX_REMOTE_HOST=10.199.51.164"
+    - "SPRING_CLOUD_CONSUL_HOST=10.199.51.164"
+    - "JAVA_OPTS=-Xmx400M"
+    - "INITIAL_DELAY=1" #local 1 ms
+    #- "INITIAL_DELAY=200" #remote 200 ms
+    - "IS_INITIAL_DELAY_RANDOM=true" #remote true
   volumes_from: #until depends_on will be introduced
     - registrator
 
 
-resthandler:
-  image: resthandler
+restsender:
+  image: restsender
   ports:
     - "8080"
+    - "8981:8981" #mode2
+    - "4001:4001"
   environment:
-    - "SERVICE_NAME=resthandler"
-    - "SERVICE_CHECK_HTTP=/health"
-    - "SERVICE_CHECK_INTERVAL=1s"
-    - "SPRING_PROFILES_ACTIVE=consul"
+    - "SERVICE_8080_NAME=restsender"
+    - "SERVICE_8981_NAME=restsenderjmxport"
+    - "SERVICE_4001_NAME=restsenderdebugport"
+    - "SERVICE_8080_CHECK_HTTP=/health"
+    - "SERVICE_8080_CHECK_INTERVAL=1s"
+    - "JMX_REMOTE_HOST=10.199.51.164"
+    - "SPRING_CLOUD_CONSUL_HOST=10.199.51.164"
+    - "SPRING_PROFILES_ACTIVE=mode2"
+    - "INITIAL_DELAY=1" #remote 200 ms
+    - "IS_INITIAL_DELAY_RANDOM=true" #remote true
   volumes_from: #until depends_on will be introduced
     - registrator
 
@@ -51,26 +64,39 @@ thriftclient:
   ports:
     - "8080"
     - "8990:8990"
+    - "4002:4002"
   environment:
     - "SERVICE_8080_NAME=thriftclient"
     - "SERVICE_8080_CHECK_HTTP=/health"
     - "SERVICE_8080_CHECK_INTERVAL=1s"
     - "SERVICE_8990_NAME=thriftclientjmxport"
-    - "SPRING_PROFILES_ACTIVE=consul"
-    - "JMX_REMOTE_HOST=<HOST_IP>"
-    - "SPRING_CLOUD_CONSUL_HOST=<HOST_IP>"
-    - "BALANCE_TIMEOUT=1" #local 1 ms
+    - "SERVICE_4002_NAME=thriftclientdebugport"
+    - "SPRING_PROFILES_ACTIVE=mode2"
+    - "JMX_REMOTE_HOST=10.199.51.164"
+    - "SPRING_CLOUD_CONSUL_HOST=10.199.51.164"
+    - "INITIAL_DELAY=1" #local 1 ms
+    #- "INITIAL_DELAY=200" #remote 200 ms
+    - "IS_INITIAL_DELAY_RANDOM=true" #remote true
+    - "JAVA_OPTS=-Xmx400M"
   volumes_from: #until depends_on will be introduced
     - registrator
 
-thrifthandler:
-  image: thrifthandler
+thriftsender:
+  image: thriftsender
   ports:
     - "8080"
+    - "8991:8991" #mode2
+    - "4003:4003"
   environment:
-    - "SERVICE_NAME=thrifthandler"
-    - "SERVICE_CHECK_HTTP=/health"
-    - "SERVICE_CHECK_INTERVAL=1s"
-    - "SPRING_PROFILES_ACTIVE=consul"
+    - "SERVICE_8080_NAME=thriftsender"
+    - "SERVICE_8080_CHECK_HTTP=/health"
+    - "SERVICE_8080_CHECK_INTERVAL=1s"
+    - "SERVICE_8991_NAME=thriftsenderjmxport"
+    - "SERVICE_4003_NAME=thriftsenderdebugport"
+    - "SPRING_CLOUD_CONSUL_HOST=10.199.51.164"
+    - "JMX_REMOTE_HOST=10.199.51.164"
+    - "SPRING_PROFILES_ACTIVE=mode2"
+    - "INITIAL_DELAY=1" #remote 200 ms
+    - "IS_INITIAL_DELAY_RANDOM=true" #remote true
   volumes_from: #until depends_on will be introduced
     - registrator

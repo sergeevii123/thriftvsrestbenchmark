@@ -4,6 +4,7 @@ ADD build/libs/thriftclient.jar app.jar
 
 EXPOSE 8080
 EXPOSE 8990
+EXPOSE 4002
 
 # setup startup command
 CMD ["bash", "-c", "java -jar  \
@@ -17,4 +18,5 @@ CMD ["bash", "-c", "java -jar  \
  -Dcom.sun.management.jmxremote=true \
  -Dbalance.timeout=$BALANCE_TIMEOUT \
  -Dspring.cloud.consul.host=$SPRING_CLOUD_CONSUL_HOST \
+ -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4002,suspend=n \
   app.jar"]

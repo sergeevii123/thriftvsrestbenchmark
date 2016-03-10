@@ -6,5 +6,4 @@ spring.cloud.consul.host: localhost
 spring:
   application:
     name: aggregator
-    profiles: consul
 spring.cloud.consul.discovery.healthCheckInterval: 1s
