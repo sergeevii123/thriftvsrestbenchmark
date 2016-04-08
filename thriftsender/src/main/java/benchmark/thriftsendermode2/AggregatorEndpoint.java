@@ -30,7 +30,6 @@ import static java.nio.ByteBuffer.wrap;
  * Created by ilya on 15.02.16.
  */
 @Profile("mode2")
-@EnableDiscoveryClient
 @EnableMBeanExport
 @Slf4j
 @RestController

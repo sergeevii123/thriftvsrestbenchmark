@@ -21,19 +21,20 @@ public class DemoMode1 {
         return (args) -> {
             TimeUnit.SECONDS.sleep(15);
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 1; i++) {
                 //start rest test
-                benchmarkRestSenderStarter.start(4*1024*1024); //file size
+                benchmarkRestSenderStarter.start(2*1024*1024); //file size
                 TimeUnit.SECONDS.sleep(2);
                 benchmarkRestClientStarter.start(2, 30); //thread count and duration in seconds
                 TimeUnit.SECONDS.sleep(32);
 
                 //start thrift test
-                benchmarkThriftSenderStarter.start(4*1024*1024); //file size
+                benchmarkThriftSenderStarter.start(2*1024*1024); //file size
                 TimeUnit.SECONDS.sleep(2);
                 benchmarkThriftClientStarter.start(2, 30); //thread count and duration in seconds
                 TimeUnit.SECONDS.sleep(32);
             }
+            TimeUnit.SECONDS.sleep(2);
             System.exit(0);
         };
     }

@@ -35,7 +35,6 @@ import static java.lang.Thread.sleep;
 @Configuration
 @Slf4j
 @RestController
-@EnableDiscoveryClient
 @ManagedResource(objectName = "benchmark.thrift:name=Settings", description = "Settings")
 public class AggregatorEndpoint {
 

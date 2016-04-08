@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 @Profile("mode2")
 @Configuration
 @EnableFeignClients
-@EnableDiscoveryClient
 @EnableMBeanExport
 @RestController
 public class AggregatorEndpoint {

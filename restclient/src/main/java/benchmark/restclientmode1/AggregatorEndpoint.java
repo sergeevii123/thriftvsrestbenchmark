@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 @Profile("mode1")
 @Configuration
 @Slf4j
-@EnableDiscoveryClient
 @RestController
 @ManagedResource(objectName = "benchmark.rest:name=Settings", description = "Settings")
 public class AggregatorEndpoint {

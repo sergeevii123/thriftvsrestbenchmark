@@ -3,6 +3,7 @@ package benchmark;
 import groovy.util.logging.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.EnableMBeanExport;
 
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.EnableMBeanExport;
  */
 @Slf4j
 @EnableFeignClients
+@EnableDiscoveryClient
 @EnableMBeanExport
 @SpringBootApplication
 public class RestClientApplication {

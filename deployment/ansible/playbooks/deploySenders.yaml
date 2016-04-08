@@ -1,0 +1,59 @@
+---
+- name: deploy senders
+  hosts: test-env
+  serial: 1
+  sudo: false
+  
+  vars_files:
+      - vars/common.yaml
+      
+  tasks:
+
+    - name: stop restsender
+      shell: docker stop restsender
+      ignore_errors: yes
+
+    - name: remove restsender
+      shell: docker rm restsender
+      ignore_errors: yes
+
+    - name: start restsender
+      shell: |
+        docker run -d -p 8082:8080 --name restsender \
+        -e "SPRING_APPLICATION_NAME=restsender" \
+        -e "SPRING_PROFILES_ACTIVE={{springProfilesActive}}" \
+        -e "SPRING_CLOUD_CONSUL_HOST={{consulIp}}" \
+        -e "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS={{discoveryIpAddress}}" \
+        -e "SPRING_CLOUD_CONSUL_DISCOVERY_PORT=8082" \
+        -e "INITIAL_DELAY=1" \
+        -e "IS_INITIAL_DELAY_RANDOM=true" \
+        -e "JMX_REMOTE_HOST={{jmxRemoteHost}}" \
+        restsender:latest
+
+
+    - name: stop thriftsender
+      shell: docker stop thriftsender
+      ignore_errors: yes
+      
+    - name: remove thriftsender
+      shell: docker rm thriftsender
+      ignore_errors: yes
+
+    - name: start thriftsender
+      shell: |
+        docker run -d -p 8084:8080 --name thriftsender \
+        -e "SPRING_APPLICATION_NAME=thriftsender" \
+        -e "SPRING_PROFILES_ACTIVE={{springProfilesActive}}" \
+        -e "SPRING_CLOUD_CONSUL_HOST={{consulIp}}" \
+        -e "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS={{discoveryIpAddress}}" \
+        -e "SPRING_CLOUD_CONSUL_DISCOVERY_PORT=8084" \
+        -e "INITIAL_DELAY=1" \
+        -e "IS_INITIAL_DELAY_RANDOM=true" \
+        -e "JMX_REMOTE_HOST={{jmxRemoteHost}}" \
+        thriftsender:latest
+
+        
+
+
+
+

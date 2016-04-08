@@ -1,5 +1,5 @@
 ---
-serviceCheckHttp: /health
-serviceCheckInterval: 1m
-springProfilesActive: consul
-consulIp: <IP Address where your consul and clients are>
+springProfilesActive: mode2
+consulIp: ip address of host with consul
+discoveryIpAddress: ip address of remote host where you deploy senders
+jmxRemoteHost: ip address for jmx debug / config
