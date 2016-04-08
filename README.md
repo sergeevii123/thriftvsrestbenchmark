@@ -24,8 +24,8 @@ Rest uses application/octet-stream
 
 * push senders to your local docker registry,
 * specify consulIp, discoveryIpAddress, jmxRemoteHost in common.yaml
-* specify <TEST_ENV> in hosts
-* specify <REMOTE_USER> in ansible.cfg
+* specify \<TEST_ENV> in hosts
+* specify \<REMOTE_USER> in ansible.cfg
 * delete restsender and thriftsender in docker-compose.yaml
 * docker-compose up -d
 * run ansible script from deployment/ansible with command: ansible-playbook playbooks/deploySenders.yaml
