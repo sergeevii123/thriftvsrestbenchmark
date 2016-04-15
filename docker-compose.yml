@@ -14,13 +14,13 @@ restclient:
     - "4000:4000"
   environment:
     - "SPRING_APPLICATION_NAME=restclient"
-    - "SPRING_PROFILES_ACTIVE=mode1"
-    - "SPRING_CLOUD_CONSUL_HOST=10.199.50.114"
-    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=10.199.50.114"
+    - "SPRING_PROFILES_ACTIVE=${TEST_MODE}"
+    - "SPRING_CLOUD_CONSUL_HOST=${HOST_FOR_TEST}"
+    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=${HOST_FOR_TEST}"
     - "SPRING_CLOUD_CONSUL_DISCOVERY_PORT=8081"
     - "INITIAL_DELAY=1" #local 1 ms
     - "IS_INITIAL_DELAY_RANDOM=true" #remote true
-    - "JMX_REMOTE_HOST=10.199.50.114"
+    - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
 
@@ -33,13 +33,13 @@ restsender:
     - "4001:4001"
   environment:
     - "SPRING_APPLICATION_NAME=restsender"
-    - "SPRING_PROFILES_ACTIVE=mode1"
-    - "SPRING_CLOUD_CONSUL_HOST=10.199.50.114"
-    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=10.199.50.114"
+    - "SPRING_PROFILES_ACTIVE=${TEST_MODE}"
+    - "SPRING_CLOUD_CONSUL_HOST=${HOST_FOR_TEST}"
+    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=${HOST_FOR_TEST}"
     - "SPRING_CLOUD_CONSUL_DISCOVERY_PORT=8082"
     - "INITIAL_DELAY=1" #remote 200 ms
     - "IS_INITIAL_DELAY_RANDOM=true" #remote true
-    - "JMX_REMOTE_HOST=10.199.50.114"
+    - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
 
@@ -51,13 +51,13 @@ thriftclient:
     - "4002:4002"
   environment:
     - "SPRING_APPLICATION_NAME=thriftclient"
-    - "SPRING_PROFILES_ACTIVE=mode1"
-    - "SPRING_CLOUD_CONSUL_HOST=10.199.50.114"
-    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=10.199.50.114"
+    - "SPRING_PROFILES_ACTIVE=${TEST_MODE}"
+    - "SPRING_CLOUD_CONSUL_HOST=${HOST_FOR_TEST}"
+    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=${HOST_FOR_TEST}"
     - "SPRING_CLOUD_CONSUL_DISCOVERY_PORT=8083"
     - "INITIAL_DELAY=1" #local 1 ms
     - "IS_INITIAL_DELAY_RANDOM=true" #remote true
-    - "JMX_REMOTE_HOST=10.199.50.114"
+    - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
 
@@ -69,12 +69,12 @@ thriftsender:
     - "4003:4003"
   environment:
     - "SPRING_APPLICATION_NAME=thriftsender"
-    - "SPRING_PROFILES_ACTIVE=mode1"
-    - "SPRING_CLOUD_CONSUL_HOST=10.199.50.114"
-    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=10.199.50.114"
+    - "SPRING_PROFILES_ACTIVE=${TEST_MODE}"
+    - "SPRING_CLOUD_CONSUL_HOST=${HOST_FOR_TEST}"
+    - "SPRING_CLOUD_CONSUL_DISCOVERY_IP_ADDRESS=${HOST_FOR_TEST}"
     - "SPRING_CLOUD_CONSUL_DISCOVERY_PORT=8084"
     - "INITIAL_DELAY=1" #remote 200 ms
     - "IS_INITIAL_DELAY_RANDOM=true" #remote true
-    - "JMX_REMOTE_HOST=10.199.50.114"
+    - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul

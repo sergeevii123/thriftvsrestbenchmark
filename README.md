@@ -1,11 +1,10 @@
 ##First version
 ###How to run locally:
-* gradle clean build dB
-* change in docker-compose.yml ip address
-* docker-compose up -d
-* Open Consul and wait for all service to turn green
-* start aggregator manually (--spring.profiles.active=mode2 or mode1)
- 
+* ./gradlew clean build dB
+* ./gradlew -Dhost.for.test=<Your host IP> -Dtest.mode=mode1 startDockers
+* Open Consul <Your host IP>:8500 in browser and wait for all service to turn green
+* ./gradlew -Dtest.mode=mode1 aggregator:bootRun
+
 when aggregator finishes connect with jconsole/jvisualvm to 127.0.0.1:8989 - rest and 127.0.0.1:8990 - thrift
 
 mbeans registry: benchmark.rest || benchmark.thrift 
@@ -17,8 +16,15 @@ For configure number of threads and length of sending file look in benchmark.agg
 Rest uses application/octet-stream
 
 2 modes:
-* mode1 - client sends get request for file (two way communication)
-* mode2 - sender sends put with file to client (one way communication)
+* mode1 - client sends get request for file (two way communication). Timer updates on client when response from sender is obtained.
+* mode2 - sender sends put request with file to client (one way communication). Timer updates on client when put request is finished.
+
+commands to run mode2:
+
+./gradlew -Dhost.for.test=<Your host IP> -Dtest.mode=mode2 startDockers
+
+./gradlew -Dtest.mode=mode2 aggregator:bootRun
+
 
 ###Remote deploy senders:
 

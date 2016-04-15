@@ -1,6 +1,8 @@
 package benchmark.aggregatormode2;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -13,6 +15,10 @@ import java.util.concurrent.TimeUnit;
 @Profile("mode2")
 @Configuration
 public class DemoMode2 {
+
+    @Autowired
+    private ConfigurableApplicationContext context;
+
     @Bean
     public CommandLineRunner demo(BenchmarkRestSenderStarterMode2 benchmarkRestSenderStarter,
                                   BenchmarkRestClientStarterMode2 benchmarkRestClientStarter,
@@ -34,6 +40,8 @@ public class DemoMode2 {
                 benchmarkThriftSenderStarter.start(2, 30, 2*1024*1024); //thread count, duration in seconds, file size
                 TimeUnit.SECONDS.sleep(32);
             }
+
+            context.close();
             System.exit(0);
         };
     }
