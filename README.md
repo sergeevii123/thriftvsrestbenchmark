@@ -1,8 +1,8 @@
 ##First version
 ###How to run locally:
 * ./gradlew clean build dB
-* ./gradlew -Dhost.for.test=<Your host IP> -Dtest.mode=mode1 startDockers
-* Open Consul <Your host IP>:8500 in browser and wait for all service to turn green
+* ./gradlew -Dhost.for.test=\<Your host IP> -Dtest.mode=mode1 startDockers
+* Open Consul \<Your host IP>:8500 in browser and wait for all service to turn green
 * ./gradlew -Dtest.mode=mode1 aggregator:bootRun
 
 when aggregator finishes connect with jconsole/jvisualvm to 127.0.0.1:8989 - rest and 127.0.0.1:8990 - thrift
@@ -21,7 +21,7 @@ Rest uses application/octet-stream
 
 commands to run mode2:
 
-./gradlew -Dhost.for.test=<Your host IP> -Dtest.mode=mode2 startDockers
+./gradlew -Dhost.for.test=\<Your host IP> -Dtest.mode=mode2 startDockers
 
 ./gradlew -Dtest.mode=mode2 aggregator:bootRun
 
