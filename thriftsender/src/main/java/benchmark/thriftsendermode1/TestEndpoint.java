@@ -13,7 +13,7 @@ import java.util.Random;
  */
 @Profile("mode1")
 @RestController
-public class AggregatorEndpoint {
+public class TestEndpoint {
 
     public byte[] array;
 

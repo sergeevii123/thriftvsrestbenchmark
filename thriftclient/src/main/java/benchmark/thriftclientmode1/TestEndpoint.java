@@ -1,16 +1,16 @@
-package benchmark.restsendermode2;
+package benchmark.thriftclientmode1;
 
-import benchmark.FileAndStart;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.codahale.metrics.JmxReporter;
+import com.codahale.metrics.MetricRegistry;
+import info.developerblog.services.user.TBenchmarkService;
+import info.developerblog.services.user.THandlerResponse;
+import info.developerblog.spring.thrift.annotation.ThriftClient;
+import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,17 +24,22 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static benchmark.ThriftClientApplication.failed;
+
 /**
  * Created by ilya on 15.02.16.
  */
-@Profile("mode2")
+@Profile("mode1")
 @Configuration
-@EnableFeignClients
-@EnableMBeanExport
 @RestController
-public class AggregatorEndpoint {
+@ManagedResource(objectName = "benchmark.thrift:name=Settings", description = "Settings")
+public class TestEndpoint {
 
-    private byte[] array;
+    private static final MetricRegistry registry;
+
+    private static final JmxReporter reporter;
+
+    private static int counter;
 
     @Value("${initial.delay:200}")
     private int initialDelay;
@@ -42,29 +47,37 @@ public class AggregatorEndpoint {
     @Value("${is.initial.delay.random}")
     private String isInitialDelayRandom;
 
-    @Autowired
-    private IRestClient client;
+    static {
+        registry = new MetricRegistry();
+        reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.thrift").build();
+        reporter.start();
+        counter = 0;
+    }
+
+    @ThriftClient(serviceId = "thriftsender", path = "/api")
+    private TBenchmarkService.Client thriftSender;
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     public void startBenchmark(@RequestParam("threadcount") int threadCount,
                                @RequestParam("duration") int duration,
                                @RequestParam("filelength") int fileLength) {
         Random random = new Random();
-        ObjectMapper mapper = new ObjectMapper();
-        array = new byte[fileLength];
-        random.nextBytes(array);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(threadCount + 1);
         List<Future> futures = new ArrayList<>();
+
+        //each new start creates new statistic
+        String name = String.format("test-%d-tc-%d-d-%d-fl-%d", counter++, threadCount, duration, fileLength);
 
         //shuts up benchmark after duration
         executor.schedule(() -> {
             for (int i = 0; i < threadCount; i++) {
                 futures.get(i).cancel(true);
             }
+
         }, duration, TimeUnit.SECONDS);
 
-
+        //send get request to thrifthandler and update metric for get-file
         for (int i = 0; i < threadCount; i++) {
             futures.add(executor.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
@@ -79,12 +92,18 @@ public class AggregatorEndpoint {
                         }
                     }
 
+                    THandlerResponse response = null;
                     try {
-                        client.sendFile(mapper.writeValueAsBytes(new FileAndStart(System.currentTimeMillis(), array)));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        response = thriftSender.getfile();
+                    } catch (TException e) {
+                        failed.error(Thread.currentThread().getName() + " error ", e);
                     }
 
+                    registry.timer(name).update(System.currentTimeMillis() - response.getStart(),
+                            TimeUnit.MILLISECONDS);
+
+                    int obtainedFileLength = response.getFile().length;
+                    if (obtainedFileLength != fileLength) failed.info("Wrong file length expected {} got {}", fileLength, obtainedFileLength);
                 }
             }));
         }

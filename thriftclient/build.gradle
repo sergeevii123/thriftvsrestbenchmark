@@ -7,4 +7,5 @@ dependencies {
     compile "info.developerblog.spring.thrift:spring-thrift-starter"
     compile "org.springframework.cloud:spring-cloud-starter-consul-all"
     compile "io.dropwizard.metrics:metrics-core"
+    compile "ch.qos.logback:logback-classic"
 }

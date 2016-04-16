@@ -1,15 +1,11 @@
-package benchmark.thriftclientmode1;
+package benchmark.thriftsendermode2;
 
-import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.MetricRegistry;
-import groovy.util.logging.Slf4j;
 import info.developerblog.services.user.TBenchmarkService;
-import info.developerblog.services.user.THandlerResponse;
+import info.developerblog.services.user.TFileAndStart;
 import info.developerblog.spring.thrift.annotation.ThriftClient;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -26,23 +22,19 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.Thread.sleep;
+import static java.nio.ByteBuffer.wrap;
+import static benchmark.ThriftSenderApplication.failed;
 
 /**
  * Created by ilya on 15.02.16.
  */
-@Profile("mode1")
-@Configuration
-@Slf4j
+@Profile("mode2")
+@EnableMBeanExport
 @RestController
 @ManagedResource(objectName = "benchmark.thrift:name=Settings", description = "Settings")
-public class AggregatorEndpoint {
+public class TestEndpoint {
 
-    private static final MetricRegistry registry;
-
-    private static final JmxReporter reporter;
-
-    private static int counter;
+    private byte[] array;
 
     @Value("${initial.delay:200}")
     private int initialDelay;
@@ -50,26 +42,19 @@ public class AggregatorEndpoint {
     @Value("${is.initial.delay.random}")
     private String isInitialDelayRandom;
 
-    static {
-        registry = new MetricRegistry();
-        reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.thrift").build();
-        reporter.start();
-        counter = 0;
-    }
-
-    @ThriftClient(serviceId = "thriftsender", path = "/api")
-    private TBenchmarkService.Client thriftSender;
+    @ThriftClient(serviceId = "thriftclient", path = "/api")
+    private TBenchmarkService.Client client;
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     public void startBenchmark(@RequestParam("threadcount") int threadCount,
-                               @RequestParam("duration") int duration) {
+                               @RequestParam("duration") int duration,
+                               @RequestParam("filelength") int fileLength) {
         Random random = new Random();
+        array = new byte[fileLength];
+        random.nextBytes(array);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(threadCount + 1);
         List<Future> futures = new ArrayList<>();
-
-        //each new start creates new statistic
-        String name = "get-file-" + counter++;
 
         //shuts up benchmark after duration
         executor.schedule(() -> {
@@ -79,7 +64,6 @@ public class AggregatorEndpoint {
 
         }, duration, TimeUnit.SECONDS);
 
-        //send get request to thrifthandler and update metric for get-file
         for (int i = 0; i < threadCount; i++) {
             futures.add(executor.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
@@ -94,15 +78,11 @@ public class AggregatorEndpoint {
                         }
                     }
 
-                    THandlerResponse response = null;
                     try {
-                        response = thriftSender.getfile();
+                        client.sendFile(new TFileAndStart(wrap(array), System.currentTimeMillis()));
                     } catch (TException e) {
-                        e.printStackTrace();
+                        failed.error(Thread.currentThread().getName() + " error ", e);
                     }
-
-                    registry.timer(name).update(System.currentTimeMillis() - response.getStart(),
-                            TimeUnit.MILLISECONDS);
                 }
             }));
         }

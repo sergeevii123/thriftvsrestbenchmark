@@ -8,4 +8,5 @@ dependencies {
     compile "io.dropwizard.metrics:metrics-core"
     compile "com.fasterxml.jackson.core:jackson-databind"
     compile "com.fasterxml.jackson.core:jackson-annotations"
+    compile "ch.qos.logback:logback-classic"
 }

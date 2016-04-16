@@ -11,10 +11,10 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
-public class Aggregator {
+public class TestStarter {
 
     public static void main(String[] args) throws InterruptedException {
-        SpringApplication.run(Aggregator.class, args);
+        SpringApplication.run(TestStarter.class, args);
     }
 
 }

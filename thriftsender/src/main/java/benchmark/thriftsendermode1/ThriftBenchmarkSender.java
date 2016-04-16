@@ -18,11 +18,11 @@ import static java.nio.ByteBuffer.wrap;
 public class ThriftBenchmarkSender implements TBenchmarkService.Iface {
 
     @Autowired
-    private AggregatorEndpoint aggregatorEndpoint;
+    private TestEndpoint testEndpoint;
 
     @Override
     public THandlerResponse getfile() throws TException {
-        return new THandlerResponse(wrap(aggregatorEndpoint.array), System.currentTimeMillis());
+        return new THandlerResponse(wrap(testEndpoint.array), System.currentTimeMillis());
     }
 
     @Override

@@ -1,7 +1,6 @@
-package benchmark.aggregatormode1;
+package benchmark.testmode1;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,5 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface BenchmarkRestClientStarterMode1 {
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     void start(@RequestParam("threadcount") int threadCount,
-               @RequestParam("duration") int duration);
+               @RequestParam("duration") int duration,
+               @RequestParam("filelength") int fileLength);
 }

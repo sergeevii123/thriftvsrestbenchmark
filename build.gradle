@@ -42,12 +42,16 @@ ext {
         return output
     }
 
-    hostForTestEnv = System.getProperty("host.for.test", "172.17.0.1")
-    mode = System.getProperty("test.mode", "mode1")
-
     getContainerIP = { def containerName ->
         executeCommand("docker inspect --format {{.NetworkSettings.IPAddress}} $containerName").toString().trim()
     }
+
+    hostForTestEnv = System.getProperty("host.for.test", "172.17.0.1")
+    mode = System.getProperty("test.mode", "mode1")
+    threadCount = System.getProperty("thread.count", Integer.toString(2))
+    fileLength = System.getProperty("file.length", Integer.toString(2*1024*1024))
+    duration = System.getProperty("duration", Integer.toString(30))
+    consulIP = System.getProperty("consul.for.test", getContainerIP("consul"))
 }
 
 
@@ -91,6 +95,7 @@ subprojects {
             dependency "org.slf4j:jcl-over-slf4j:1.7.12"
             dependency "io.dropwizard.metrics:metrics-core:3.1.2"
             dependency "org.codehaus.groovy:groovy-all:2.4.4"
+            dependency "ch.qos.logback:logback-classic:1.1.3"
             dependency "org.apache.thrift:libthrift:${thriftVersion}"
             dependency("org.springframework.cloud:spring-cloud-starter-consul-all:1.0.0.RC1") {
                 exclude group: "io.reactivex", module: "rxjava"
@@ -162,14 +167,17 @@ subprojects {
     }
 }
 
-projects(['aggregator']) {
-    def consulIP = getContainerIP("consul")
+projects(['test']) {
+    //def consulIP = getContainerIP("consul")
 
     bootRun {
         doFirst {
             systemProperty "spring.cloud.consul.host", consulIP
             systemProperty "server.port", "1234"
             systemProperty "spring.profiles.active", mode
+            systemProperty "thread.count", threadCount
+            systemProperty "file.length", fileLength
+            systemProperty "duration", duration
         }
     }
 

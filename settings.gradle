@@ -3,5 +3,5 @@ include 'thriftclient'
 include 'thriftsender'
 include 'restclient'
 include 'restsender'
-include 'aggregator'
+include 'test'
 

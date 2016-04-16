@@ -5,5 +5,5 @@ spring.cloud.consul.host: localhost
 ---
 spring:
   application:
-    name: aggregator
+    name: teststarter
 spring.cloud.consul.discovery.healthCheckInterval: 1s

@@ -1,23 +1,20 @@
-package benchmark.restclientmode1;
+package benchmark.restsendermode2;
 
 import benchmark.FileAndStart;
-import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.MetricRegistry;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,21 +23,19 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static benchmark.RestSenderApplication.failed;
+
 /**
  * Created by ilya on 15.02.16.
  */
-@Profile("mode1")
+@Profile("mode2")
 @Configuration
-@Slf4j
+@EnableFeignClients
+@EnableMBeanExport
 @RestController
-@ManagedResource(objectName = "benchmark.rest:name=Settings", description = "Settings")
-public class AggregatorEndpoint {
+public class TestEndpoint {
 
-    private static final MetricRegistry registry;
-
-    private static final JmxReporter reporter;
-
-    private static int counter;
+    private byte[] array;
 
     @Value("${initial.delay:200}")
     private int initialDelay;
@@ -48,27 +43,20 @@ public class AggregatorEndpoint {
     @Value("${is.initial.delay.random}")
     private String isInitialDelayRandom;
 
-
-    static {
-        registry = new MetricRegistry();
-        reporter = JmxReporter.forRegistry(registry).inDomain("benchmark.rest").build();
-        reporter.start();
-        counter = 0;
-    }
-
     @Autowired
-    private BenchmarkRestSender restSender;
+    private IRestClient client;
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     public void startBenchmark(@RequestParam("threadcount") int threadCount,
-                               @RequestParam("duration") int duration) {
-        ObjectMapper mapper = new ObjectMapper();
+                               @RequestParam("duration") int duration,
+                               @RequestParam("filelength") int fileLength) {
         Random random = new Random();
+        ObjectMapper mapper = new ObjectMapper();
+        array = new byte[fileLength];
+        random.nextBytes(array);
+
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(threadCount + 1);
         List<Future> futures = new ArrayList<>();
-
-        //each new start creates new statistic
-        String name = "get-file-" + counter++;
 
         //shuts up benchmark after duration
         executor.schedule(() -> {
@@ -76,6 +64,7 @@ public class AggregatorEndpoint {
                 futures.get(i).cancel(true);
             }
         }, duration, TimeUnit.SECONDS);
+
 
         for (int i = 0; i < threadCount; i++) {
             futures.add(executor.submit(() -> {
@@ -92,11 +81,9 @@ public class AggregatorEndpoint {
                     }
 
                     try {
-                        FileAndStart fileAndStart = mapper.readValue(restSender.getFile(), FileAndStart.class);
-                        registry.timer(name).update(System.currentTimeMillis() - fileAndStart.getStart(),
-                                TimeUnit.MILLISECONDS);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        client.sendFile(mapper.writeValueAsBytes(new FileAndStart(System.currentTimeMillis(), array)));
+                    } catch (JsonProcessingException e) {
+                        failed.error(Thread.currentThread().getName() + " error ", e);
                     }
 
                 }

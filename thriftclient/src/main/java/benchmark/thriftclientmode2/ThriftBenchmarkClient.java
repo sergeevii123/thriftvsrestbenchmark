@@ -12,6 +12,8 @@ import ru.trylogic.spring.boot.thrift.annotation.ThriftHandler;
 
 import java.util.concurrent.TimeUnit;
 
+import static benchmark.ThriftClientApplication.failed;
+
 /**
  * Created by ilya on 16.02.16.
  */
@@ -30,7 +32,7 @@ public class ThriftBenchmarkClient implements TBenchmarkService.Iface {
     }
 
     @Autowired
-    private AggregatorEndpoint aggregatorEndpoint;
+    private TestEndpoint testEndpoint;
 
     @Override
     public THandlerResponse getfile() throws TException {
@@ -39,7 +41,10 @@ public class ThriftBenchmarkClient implements TBenchmarkService.Iface {
 
     @Override
     public void sendFile(TFileAndStart t) throws TException {
-        registry.timer(aggregatorEndpoint.name).update(System.currentTimeMillis() - t.getStart(),
+        registry.timer(testEndpoint.name).update(System.currentTimeMillis() - t.getStart(),
                 TimeUnit.MILLISECONDS);
+
+        int obtainedFileLength = t.getFile().length;
+        if (obtainedFileLength != testEndpoint.fileLength) failed.info("Wrong file length expected {} got {}", testEndpoint.fileLength, obtainedFileLength);
     }
 }

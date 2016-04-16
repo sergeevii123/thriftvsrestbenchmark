@@ -1,29 +1,44 @@
-##First version
-###How to run locally:
+###How to run locally on Linux and docker0 ip is 172.17.0.1:
 * ./gradlew clean build dB
-* ./gradlew -Dhost.for.test=\<Your host IP> -Dtest.mode=mode1 startDockers
-* Open Consul \<Your host IP>:8500 in browser and wait for all service to turn green
-* ./gradlew -Dtest.mode=mode1 aggregator:bootRun
+* ./gradlew startDockers
+* Open Consul 127.0.0.1:8500 in browser and wait for all service to turn green
+* ./gradlew test:bootRun
 
-when aggregator finishes connect with jconsole/jvisualvm to 127.0.0.1:8989 - rest and 127.0.0.1:8990 - thrift
+###How to run locally on docker machine(ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*1024 -Dfile.length=262144. Or your load test will not be representative):
+* ./gradlew clean build dB
+* ./gradlew -Dhost.for.test=\<Your docker machine IP> startDockers
+* Open Consul \<Your docker machine IP>:8500 in browser and wait for all service to turn green
+* ./gradlew -Dfile.length=262144 -Dconsul.for.test=\<Your docker machine IP> test:bootRun
 
-mbeans registry: benchmark.rest || benchmark.thrift 
+when test finishes connect with jconsole/jvisualvm to \<Your host IP>:8989 - rest and \<Your host IP>:8990 - thrift
 
-In current version aggregator just starts test for thrift and rest.
+mbeans registry: benchmark.rest || benchmark.thrift
 
-For configure number of threads and length of sending file look in benchmark.aggregatormode1.DemoMode1 for mode1 and benchmark.aggregatormode2.DemoMode2
+test name pattern: test-\<test number>-tc-\<thread count>-d-\<duration>-fl-\<file length>
+
+For configure number of threads, length of sending file(bytes) and duration(seconds) specify -Dthread.count(default: 2) -Dfile.length(default: 2*1024*1024) -Dduration(default: 30)
+
+example: ./gradlew -Dthread.count=4 -Dfile.length=1048576 -Dduration=10 test:bootRun
 
 Rest uses application/octet-stream
 
 2 modes:
-* mode1 - client sends get request for file (two way communication). Timer updates on client when response from sender is obtained.
-* mode2 - sender sends put request with file to client (one way communication). Timer updates on client when put request is finished.
+* mode1 - client sends get request for file and current time on sender. Timer updates on client when response from sender is obtained.
+
+Timer update = current time on client - time from sender response.
+* mode2 - sender sends put request with file and current time to client. Timer updates on client when put request is finished.
+
+Timer update = current time on client - time from sender put request
+
+After timer update client checks that file length equals specified file length.
+
+If they are different client writes error message to client log which is in path ./logs relative to docker-compose.yml (if you're not running on docker-machine)
 
 commands to run mode2:
 
 ./gradlew -Dhost.for.test=\<Your host IP> -Dtest.mode=mode2 startDockers
 
-./gradlew -Dtest.mode=mode2 aggregator:bootRun
+./gradlew -Dtest.mode=mode2 test:bootRun
 
 
 ###Remote deploy senders:

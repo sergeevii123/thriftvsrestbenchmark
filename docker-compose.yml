@@ -23,6 +23,8 @@ restclient:
     - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
+  volumes:
+    - ./logs/restclient:/logs
 
 
 restsender:
@@ -42,6 +44,8 @@ restsender:
     - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
+  volumes:
+    - ./logs/restsender:/logs
 
 thriftclient:
   image: thriftclient
@@ -60,6 +64,8 @@ thriftclient:
     - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
+  volumes:
+    - ./logs/thriftclient:/logs
 
 thriftsender:
   image: thriftsender
@@ -78,3 +84,5 @@ thriftsender:
     - "JMX_REMOTE_HOST=${HOST_FOR_TEST}"
   volumes_from: #until depends_on will be introduced
     - consul
+  volumes:
+    - ./logs/thriftsender:/logs
