@@ -4,7 +4,10 @@
 * Open Consul 127.0.0.1:8500 in browser and wait for all service to turn green
 * ./gradlew test:bootRun
 
-###How to run locally on docker machine(ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*1024 -Dfile.length=262144. Or your load test will not be representative):
+###How to run locally on docker machine
+
+####ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*1024 -Dfile.length=262144. Or your load test will not be representative
+
 * ./gradlew clean build dB
 * ./gradlew -Dhost.for.test=\<Your docker machine IP> startDockers
 * Open Consul \<Your docker machine IP>:8500 in browser and wait for all service to turn green
