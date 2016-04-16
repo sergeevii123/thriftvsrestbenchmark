@@ -33,10 +33,8 @@ Rest uses application/octet-stream
 
 2 modes:
 * mode1 - client sends get request for file and current time on sender. Timer updates on client when response from sender is obtained.
-
 Timer update = current time on client - time from sender response.
 * mode2 - sender sends put request with file and current time to client. Timer updates on client when put request is finished.
-
 Timer update = current time on client - time from sender put request
 
 After timer update client checks that file length equals specified file length.
