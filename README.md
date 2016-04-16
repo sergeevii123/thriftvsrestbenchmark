@@ -6,7 +6,7 @@
 
 ###How to run locally on docker machine
 
-####ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*1024 -Dfile.length=262144. Or your load test will not be representative
+Ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*1024 -Dfile.length=262144. Or your load test will not be representative
 
 * ./gradlew clean build dB
 * ./gradlew -Dhost.for.test=\<Your docker machine IP> startDockers
