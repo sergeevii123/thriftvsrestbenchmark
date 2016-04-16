@@ -19,7 +19,13 @@ mbeans registry: benchmark.rest || benchmark.thrift
 
 test name pattern: test-\<test number>-tc-\<thread count>-d-\<duration>-fl-\<file length>
 
-For configure number of threads, length of sending file(bytes) and duration(seconds) specify -Dthread.count(default: 2) -Dfile.length(default: 2*1024*1024) -Dduration(default: 30)
+For configure number of threads, length of sending file(bytes) and duration(seconds) specify:
+
+ -Dthread.count(default: 2)
+
+ -Dfile.length(default: 2\*1024\*1024)
+
+ -Dduration(default: 30)
 
 example: ./gradlew -Dthread.count=4 -Dfile.length=1048576 -Dduration=10 test:bootRun
 
