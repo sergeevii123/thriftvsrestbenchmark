@@ -35,11 +35,11 @@ Rest uses application/octet-stream
 * mode1 - client sends get request for file and current time on sender. Timer updates on client when response from sender is obtained.
 Timer update = current time on client - time from sender response.
 * mode2 - sender sends put request with file and current time to client. Timer updates on client when put request is finished.
-Timer update = current time on client - time from sender put request
+Timer update = current time on client - time from sender put request.
 
 After timer update client checks that file length equals specified file length.
 
-If they are different client writes error message to client log which is in path ./logs relative to docker-compose.yml (if you're not running on docker-machine)
+If they are different client writes error message to client log which is in path ./logs relative to docker-compose.yml (for test on docker machine connect directly to containers)
 
 commands to run mode2:
 
