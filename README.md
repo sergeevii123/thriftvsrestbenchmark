@@ -1,7 +1,7 @@
 ###How to run locally on Linux and docker0 ip is 172.17.0.1:
 * ./gradlew clean build dB
 * ./gradlew startDockers
-* Open Consul 127.0.0.1:8500 in browser and wait for all service to turn green
+* Open Consul 127.0.0.1:8500 in browser and wait for all services('thriftclient', 'thriftsender', 'restclient', 'restsender') to turn green
 * ./gradlew test:bootRun
 
 ###How to run locally on docker machine
@@ -10,7 +10,7 @@ Ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*
 
 * ./gradlew clean build dB
 * ./gradlew -Dhost.for.test=\<Your docker machine IP> startDockers
-* Open Consul \<Your docker machine IP>:8500 in browser and wait for all service to turn green
+* Open Consul \<Your docker machine IP>:8500 in browser and wait for all services to turn green
 * ./gradlew -Dfile.length=262144 -Dconsul.for.test=\<Your docker machine IP> test:bootRun
 
 when test finishes connect with jconsole/jvisualvm to \<Your host IP>:8989 - rest and \<Your host IP>:8990 - thrift
