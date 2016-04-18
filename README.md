@@ -13,7 +13,9 @@ Ensure your docker machine has at least 4 cpu, 8192 ram and max file length 256*
 * Open Consul \<Your docker machine IP>:8500 in browser and wait for all services to turn green
 * ./gradlew -Dfile.length=262144 -Dconsul.for.test=\<Your docker machine IP> test:bootRun
 
-when test finishes connect with jconsole/jvisualvm to \<Your host IP>:8989 - rest and \<Your host IP>:8990 - thrift
+###when test finishes
+
+connect with jconsole/jvisualvm to \<Your host IP>:8989 - rest and \<Your host IP>:8990 - thrift
 
 mbeans registry: benchmark.rest || benchmark.thrift
 
