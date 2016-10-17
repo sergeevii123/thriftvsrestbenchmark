@@ -1,3 +1,13 @@
+### Disclaimer
+
+It's only a blackbox test
+
+Use at your own risk
+
+my results:
+ 
+![Alt text](img/thriftvsrest.jpg "thrift")
+
 ###How to run locally on Linux and docker0 ip is 172.17.0.1:
 * ./gradlew clean build dB
 * ./gradlew startDockers
